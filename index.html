@@ -1,557 +1,506 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arsip Data Siswa</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
-        .card {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            transition: all 0.3s ease-in-out;
-        }
-        .card:hover {
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-        }
-        .loader {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 4px solid #ffffff;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .input-with-icon {
-            position: relative;
-        }
-        .input-with-icon .icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9ca3af;
-        }
-        .input-with-icon input, .input-with-icon select {
-            padding-left: 40px;
-        }
-    </style>
-</head>
-<body class="flex items-center justify-center min-h-screen p-4">
-
-    <!-- Kontainer Login / Pencarian -->
-    <div id="login-container" class="w-full max-w-md p-8 space-y-6 card">
-        <div class="text-center">
-            <div class="flex justify-center mx-auto mb-4 text-teal-600">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
-                </svg>
-            </div>
-            <h1 class="text-2xl font-bold text-gray-800">Arsip Digital Data Siswa</h1>
-            <p class="text-gray-500">MA Ma'arif 1 Jombang</p>
-        </div>
-        
-        <div class="space-y-4">
-            <div class="input-with-icon">
-                <span class="icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                    </svg>
-                </span>
-                <input type="text" id="searchInput" class="w-full px-4 py-2 border border-teal-600 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Masukkan NISN atau Nama Siswa">
-            </div>
-        </div>
-
-        <button id="login-button" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 font-semibold text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m-3-3-3 3m0 0 3 3m-3-3H16.5" />
-            </svg>
-            <span id="login-button-text">Cari Data Siswa</span>
-            <div id="loader" class="loader hidden"></div>
-        </button>
-        <p id="error-message" class="text-red-500 text-sm text-center hidden pt-2"></p>
+<!doctype html>
+<html lang="id"><head><script>window["__codeletBootstrap__"]=JSON.parse('{"A":"A","B":"20261027-01-f13c6c5","C":{"Abril Fatface":"YACgEZbkUVE,0","Albert Sans":"YAHO2HRfeh4,0","Alfa Slab One":"YACgEYS9sJU,0","Allura":"YACgEap1YR0,0","Anton":"YACgEcYqQ-A,0","Archivo Black":"YACgEZulLoA,0","Archivo":"YAHO2-t-jNE,0","Arial":"YAGyDvJ_4Ts,0","Arvo":"YACgEf17hXM,0","Atkinson Hyperlegible":"YAFge7Z-F6s,0","Azeret Mono":"YAHO2EIdDP0,0","Baloo 2":"YAHO2IcQUcM,0","Bangers":"YAD5qTdjGKo,1","Barlow Condensed":"YAFdJljEuFc,0","Barlow Semi Condensed":"YAFdJu55qXI,0","Barlow":"YAFdJsyuOPM,1","Bebas Neue":"YACgESME5ew,0","Big Shoulders Display":"YAFdJs8L2aw,0","Bodoni Moda":"YAHO2C7VUJE,0","Bricolage Grotesque":"YAFyMcdwzpc,0","Cairo":"YAFdtXpDzlQ,0","Canva Sans":"YAFdJjTk5UU,1","Caprasimo":"YAHO2PYTkbo,0","Caveat":"YALBs2ploWQ,0","Cinzel":"YACgEeV8bIQ,0","Comic Neue":"YAHO2VMiyZo,0","Commissioner":"YAHO2RRI-KE,0","Cormorant Garamond":"YAFdJhX-538,0","Courier New":"YAGzXiGs0_8,0","Courier Prime":"YAD1aFjegN8,0","DM Mono":"YAHO2SGpw0w,0","DM Sans":"YAD1aU3sLnI,0","DM Serif Display":"YAD1aYG82rc,0","DynaPuff":"YAFyMRnxBDs,0","EB Garamond":"YAFdJtfMD6Y,0","Familjen Grotesk":"YAHO2ZriIzU,0","Figtree":"YAHO2b-mV7A,0","Forum":"YACgEcnnqB4,0","Fraunces":"YAFdJpU7Kkk,0","Fredoka":"YACgEZml080,0","Gabarito":"YAHO2cD3JmI,0","Geist Mono":"YAHO2XOe8v8,0","Geist":"YAHO2SfKS30,0","Gentium Book Plus":"YAHO2b-adyU,0","Georgia":"YAGzXkO0pEM,0","Gloock":"YAHO2WVhd0Q,0","Golos Text":"YAHO2QlqAQk,0","Hanken Grotesk":"YAHO2VB9G0I,0","Helvetica":"YAFcf7zkXN0,0","Host Grotesk":"YAHO2VztvdY,0","IBM Plex Mono":"YAFdJkmvhGI,0","IBM Plex Sans Arabic":"YAGVuEYCNg0,1","IBM Plex Sans":"YAFdJgT0SHI,0","Impact":"YAFcfnjI7Vk,0","Instrument Sans":"YAHO2bKyaSQ,0","Instrument Serif":"YAHFeOnZNEk,0","Inter":"YAFdJvSyp_k,3","Italiana":"YAHO2Toik_w,0","Jacques Francois":"YAHO2a5g66Q,0","JetBrains Mono":"YAFdJksXcAk,0","Josefin Sans":"YAFdJjvw9Ps,0","Jua":"YADK3-gZSDU,0","Kalam":"YAFdJrEg2ic,0","Karla":"YAHO2V2NSXM,0","Lato":"YAFdJuFCnaw,0","League Spartan":"YACgEcnJpjs,0","Lexend Mega":"YAD9UdrjgZw,0","Libre Baskerville":"YACgEUFdPdA,0","Libre Caslon Display":"YAHO2XhLmt0,0","Libre Caslon Text":"YAHO2USylHk,0","Libre Franklin":"YAFdJr3SNlU,1","Lobster":"YAD8SnSjSFI,0","Lora":"YACgEXvxf8Q,0","Manrope":"YAHO2b2feC4,0","Martian Mono":"YAHO2YhUMkk,0","Merriweather":"YACgEXvHxxs,0","Michroma":"YADK4IYX8vY,0","Montserrat":"YAFdtQi73Xs,0","Mooli":"YAHO2QudnvU,0","Noto Sans JP":"YAFdJiHXlcI,0","Noto Sans KR":"YAGsojZj-RQ,0","Noto Sans SC":"YAHO2hDCDFM,0","Nunito Sans":"YAFdtQJYB9w,1","Nunito":"YAFdJoNRMmU,1","Old Standard TT":"YAHO2lhtDcg,0","Oleo Script":"YACgEQQ14jI,0","Onest":"YAHO2kaArOY,0","Open Sans":"YAFdJt8dAY0,1","Orbitron":"YAHO2tXXH_o,0","Oswald":"YACgEQY10lw,0","Outfit":"YAHO2nVlg14,0","PT Serif":"YACgEcU7Qg4,0","Pacifico":"YADLjORQ1u4,0","Parisienne":"YACgERSYqTw,0","Patua One":"YAHO2qRZWLE,0","Playfair Display":"YAFdJhem5V8,1","Plus Jakarta Sans":"YAHO2gdhi18,0","Poppins":"YAFdJjbTu24,1","Press Start 2P":"YAFyGr-8pmQ,0","Prompt":"YAFdJmA6sOY,0","Public Sans":"YAFdJj8NdaU,1","Quicksand":"YAFdJpYtCxE,1","Raleway":"YAFdJhmxbVQ,1","Red Hat Display":"YAD1bzs0p0Y,0","Red Hat Text":"YAHO21kkNWg,0","Roboto Mono":"YAFdJkvp3-k,0","Roboto Slab":"YAFdJswIKAg,0","Rockwell":"YAFcfyVZnN0,0","Rubik":"YAFdJsMWVVc,0","Rye":"YACgEdQP21k,0","STIX Two Text":"YAHO2joycuk,0","Sarabun":"YAFdJssSnME,0","Schibsted Grotesk":"YAHO2sWydRk,0","Segoe UI":"YAHNdRD1Klw,0","Shippori Mincho":"YAGWZNRJkO8,0","Sniglet":"YACgEUJSCy8,0","Sora":"YAHO2rDTR1E,0","Source Sans 3":"YAG4lO1Mj10,0","Space Grotesk":"YAHO2sjPCSM,0","Space Mono":"YADW1-vpsoc,0","Spectral":"YAHO2rVUHIM,0","Syne":"YAHML9oLRPc,0","Tahoma":"YAFcfipOFgg,0","Times New Roman":"YAGzXW3gftg,0","Trebuchet MS":"YAFcfrglpVA,0","Ubuntu":"YACgERDU--Q,0","Unbounded":"YAHO2rkdmWY,0","Varela Round":"YALBs2IK6rw,0","Verdana":"YAGzXTctYtQ,0","Work Sans":"YAGXhLOKv44,0","Yellowtail":"YACgEYG4kG4,0","roboto":"YACgEev4gKc,0"}}');</script><script src="/_sdk/c1d5809772e68e4a.telemetry_sdk.js" integrity="sha512-oT7iKGjGhNaUNlHFPgJWNnT7dfWWN1RmmFLrFQIu75q8o0FMyvJn4ub5kaVy0ohrSaHM/YBCXGqFs2ulcRJGxA=="></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>e-Ardis — MA Ma'arif 1 Jombang</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: Inter, sans-serif; color: #1f2937; }
+    .app-card { background: white; border-radius: 12px; box-shadow: 0 10px 15px -3px #00000012, 0 4px 6px -4px #0000001a; }
+    .app-card:hover { box-shadow: 0 20px 25px -5px #00000014, 0 8px 10px -6px #00000014; }
+    .focusable:focus-visible { outline: 3px solid #0d9488; outline-offset: 3px; }
+    .photo-surface { background-color: #ccfbf1; background-position: center top; background-size: cover; }
+    .student-field { min-width: 0; }
+    .student-field p:last-child { overflow-wrap: anywhere; }
+    .card-preview {
+      width: 85.6mm; height: 53.98mm; flex: none; overflow: hidden;
+      border: .3mm solid #b7d7d2; border-radius: 3mm; background: white;
+      box-shadow: 0 10px 25px #0f51472a; color: #173b39;
+      display: flex; flex-direction: column; position: relative;
+      font-family: Inter, sans-serif;
+    }
+    .card-band { background: #2f7e2b; color: white; padding: 2.7mm 4mm 2.1mm; display: flex; justify-content: space-between; align-items: flex-start; gap: 2mm; min-height: 16mm; }
+    .card-school { font-size: 9pt; font-weight: 800; line-height: 1.15; }
+    .card-subtitle { font-size: 5.6pt; letter-spacing: .04em; margin-top: .8mm; font-weight: 700; }
+    .card-brand { background: transparent; color: #2f7e2b; padding: 0; border-radius: 0; font-size: 6.5pt; font-weight: 800; white-space: nowrap; }
+    .card-inner { padding: 2.5mm 4mm 1.5mm; display: flex; gap: 3mm; flex: 1; min-height: 0; background: linear-gradient(180deg,#ffffff 0%,#f4f7f1 100%); }
+    .card-photo { width: 20mm; height: 23mm; border-radius: 1mm; border: .35mm solid #c9c9c9; flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1mm; font-weight: 800; font-size: 17pt; color: #2f7e2b; }
+    .card-barcode { display: block; width: 34mm; height: 7mm; background: white; flex: none; }
+    .card-info { flex: 1; min-width: 0; font-size: 6.6pt; line-height: 1.25; }
+    .card-name { font-size: 8.3pt; font-weight: 800; color: #173b39; text-transform: none; white-space: nowrap; overflow: visible; line-height: 1.15; margin-bottom: 1.2mm; }
+    .card-row { display: flex; gap: 1mm; padding-top: .65mm; }
+    .card-row dt { width: 25mm; flex: none; color: #173b39; font-weight: 700; text-align: left; display: grid; grid-template-columns: 20mm 5mm; }
+    .card-row dt .card-label-colon { text-align: center; }
+    .card-row dd { margin: 0; font-size: 6.6pt; font-weight: 600; line-height: 1.25; white-space: nowrap; overflow: visible; }
+    .card-footer { margin-top: auto; border-top: .25mm solid #a8c7a5; padding: 1.1mm 4mm 1.5mm; font-size: 5.5pt; color: #173b39; display: flex; justify-content: space-between; align-items: end; gap: 2mm; background: #f7fbf4; }
+    #card-footer-barcode-wrap { display: block; flex: 1; min-width: 0; }
+    #card-footer-barcode-wrap .card-barcode { width: 34mm; height: 7mm; }
+    .card-signature { color: #17251a; font-family: cursive; font-size: 10pt; font-style: italic; line-height: 1; }
+    .card-signature-label { font-size: 5pt; font-weight: 700; text-align: center; }
+    .back-inner { padding: 3mm 4mm 1mm; flex: 1; min-height: 0; color: #173b39; transform: translateY(-2mm); }
+    .back-title { margin: 0 0 2.5mm; color: #0f766e; font-size: 8.2pt; font-weight: 800; line-height: 1.15; }
+    .back-rules { margin: 0; padding-left: 4.2mm; font-size: 6.35pt; line-height: 1.28; }
+    .back-rules li { padding-left: .7mm; margin-bottom: 1.35mm; }
+    .back-rules li::marker { color: #0f766e; font-weight: 800; }
+    #preview-overlay[hidden], [hidden] { display: none !important; }
+    @media (max-width: 420px) {
+      .preview-scale { zoom: .84; }
+    }
+    @media print {
+      @page { size: A4 portrait; margin: 12mm; }
+      html, body { width: 100%; margin: 0 !important; padding: 0 !important; background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      #application, #preview-heading, #preview-controls { display: none !important; }
+      #preview-overlay { display: block !important; position: static !important; background: none !important; padding: 0 !important; overflow: visible !important; }
+      #preview-panel { width: auto !important; max-width: none !important; padding: 0 !important; background: none !important; box-shadow: none !important; }
+      #print-cards { display: block !important; }
+      .preview-scale { zoom: 1 !important; margin-bottom: 8mm; break-inside: avoid; page-break-inside: avoid; }
+      .card-preview { width: 85.6mm !important; height: 53.98mm !important; box-shadow: none !important; }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js" type="text/javascript"></script>
+  <script src="/_sdk/2907482ed964d57b.data_sdk.js" type="text/javascript" integrity="sha512-GUvwysl7ZJ/sNlcDtv8sWKy0vKowoN/I+aynrBT6Rb9lfzvsjfkM9d1utuBD0yG/L4GoXXXzzxk194bhB49qfw=="></script>
+  <script src="/_sdk/a4473dd9c536fd5b.editing_sdk.js" type="text/javascript" integrity="sha512-d1zhZB6Ow6VGSYnI6q01vyHGUdBuyqCW9cBRKyTQ4nnlFIHZbx13MYpGjFdlXI8gs03dsLkQDv/HjxzNbaZs+w=="></script>
+  <script src="/_sdk/c774963abc6f03de.resizing_sdk.js" type="text/javascript" integrity="sha512-fVA81vJnL46vGKioyJJbk3XaJjdaKaDnDMTShVQ1S1kBQM4xcUhuy93NTuRYEspgyUVmkpVo4DcQ4X0vP2kYcQ=="></script>
+ </head>
+ <body data-template-id="__page-root" class="w-full min-h-screen" style="background: rgb(243, 244, 246);">
+  <main id="application" class="w-full min-h-screen flex items-center justify-center p-4 sm:p-6">
+   <section id="login-container" data-template-id="search-panel" class="canva-card app-card border-y-4 border-teal-600 w-full max-w-sm p-7 sm:p-8 space-y-5" style="background: rgb(255, 255, 255);">
+    <header class="text-center">
+     <div class="mx-auto w-16 h-16 text-teal-600 flex items-center justify-center" aria-hidden="true">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-14 h-14">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 9.75v8.25A2.25 2.25 0 006 20.25h12a2.25 2.25 0 002.25-2.25V9.75M3.75 9.75V6A2.25 2.25 0 016 3.75h4.16c.6 0 1.17.24 1.59.66l1.72 1.72a.75.75 0 00.53.22H18a2.25 2.25 0 012.25 2.25v1.15M10 12h8v8h-8z"></path>
+      </svg>
+     </div>
+     <p data-template-id="search-brand" class="canva-text font-bold mb-3" style="color: rgb(13, 148, 136); font-weight: 700; font-style: normal; font-size: 16px;">e-Ardis</p>
+     <h1 data-template-id="search-title" class="canva-text font-bold" style="color: rgb(31, 41, 55); font-weight: 700; font-style: normal; font-size: 32px;">Arsip Digital Data Siswa</h1>
+     <p data-template-id="school-caption" class="canva-text mt-1" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">MA Ma'arif 1 Jombang</p>
+    </header>
+    <form id="search-form" class="space-y-4">
+     <div><label data-template-id="search-label" for="searchInput" class="canva-text block mb-2 font-medium" style="color: rgb(75, 85, 99); font-weight: 500; font-style: normal; font-size: 16px;">Masukkan 10 digit NISN</label> <input id="searchInput" type="search" autocomplete="off" class="w-full px-4 py-3 border border-gray-300 rounded-md focusable focus:border-teal-600 outline-none" aria-describedby="error-message">
+     </div><button id="login-button" type="submit" data-template-id="search-button" class="canva-button focusable w-full px-4 py-3 font-semibold rounded-md hover:brightness-90 disabled:opacity-60" style="background: rgb(13, 148, 136); color: rgb(255, 255, 255); font-weight: 600; font-style: normal; font-size: 16px;">Cari Data Siswa</button>
+     <p id="loading-text" data-template-id="loading-label" class="canva-text hidden text-center" role="status" style="color: rgb(15, 118, 110); font-weight: 400; font-style: normal; font-size: 16px;">Mencari data siswa…</p>
+     <div class="flex justify-between gap-3 items-start">
+      <p id="error-message" class="text-red-600 text-sm hidden" role="alert"></p><a data-template-id="help-link" href="https://api.whatsapp.com/send?phone=6285748408728&amp;text=Assalamu%27alaikum.%0APak+saya+lupa+nomor+NISN+saya,+mohon+bantuannya+ya+pak%21" target="_blank" rel="noopener noreferrer" class="canva-link focusable text-sm font-semibold ml-auto whitespace-nowrap hover:underline" style="color: rgb(13, 148, 136); font-weight: 600; font-style: normal; font-size: 16px;">Lupa No. NISN?</a>
+     </div>
+    </form>
+    <aside data-template-id="search-tip-panel" class="canva-panel border-l-4 border-teal-600 rounded-md p-3" style="background: rgb(240, 253, 250);">
+     <p data-template-id="search-tip" class="canva-text text-sm" style="color: rgb(17, 94, 89); font-weight: 400; font-style: normal; font-size: 16px;">Transformasi Digital Arsip Data Siswa, temukan data siswa lebih Cepat, Tepat dan Akurat.</p>
+    </aside>
+    <footer class="text-center text-xs text-gray-500">
+     © <span id="year"></span> MA Ma'arif 1 Jombang
+    </footer>
+   </section>
+   <section id="list-container" data-template-id="results-panel" class="canva-card hidden app-card w-full max-w-4xl p-5 sm:p-8 space-y-5" aria-labelledby="results-title" style="background: rgb(255, 255, 255);">
+    <header class="flex flex-wrap justify-between gap-4 items-center border-b pb-4">
+     <div>
+      <h2 id="results-title" data-template-id="results-heading" class="canva-text font-bold" style="color: rgb(31, 41, 55); font-weight: 700; font-style: normal; font-size: 24px;">Arsip Digital Data Siswa</h2>
+      <p class="text-sm text-gray-500 mt-1">Hasil pencarian: <span id="search-query-value"></span></p>
+     </div><button id="back-to-search-button" type="button" data-template-id="results-exit" class="canva-button focusable px-4 py-2 rounded-md font-semibold hover:brightness-95" style="background: rgb(254, 226, 226); color: rgb(185, 28, 28); font-weight: 600; font-style: normal; font-size: 16px;">Keluar</button>
+    </header>
+    <div class="overflow-x-auto rounded-lg border">
+     <table class="w-full text-sm text-left">
+      <thead class="bg-gray-50 text-gray-700 uppercase text-xs">
+       <tr>
+        <th scope="col" class="p-3">No</th>
+        <th scope="col" class="p-3">Nama Siswa</th>
+        <th scope="col" class="p-3">NISN</th>
+        <th scope="col" class="p-3">Status</th>
+        <th scope="col" class="p-3">Aksi</th>
+       </tr>
+      </thead>
+      <tbody id="student-table-body" class="divide-y"></tbody>
+     </table>
     </div>
-
-    <!-- Kontainer Daftar Siswa (Tabel) -->
-    <div id="list-container" class="hidden w-full max-w-4xl p-6 md:p-8 space-y-4 md:space-y-6 card">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 md:pb-4 gap-3 md:gap-4">
-             <div class="flex items-center gap-3 w-full sm:w-auto">
-                 <div class="flex-shrink-0 text-teal-600 bg-teal-50 p-2 rounded-full border border-teal-600">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 md:w-8 md:h-8">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
-					</svg>
-                 </div>
-                 <div>
-                     <h1 class="text-lg md:text-2xl font-bold text-gray-800">Arsip Digital Data Siswa</h1>
-                     <p class="text-xs md:text-sm text-gray-500" id="search-result-count">Menampilkan data siswa</p>
-                 </div>
-             </div>
-
-             <!-- Tombol Cari Ulang -->
-             <button id="back-to-search-button" class="w-full sm:w-auto flex-shrink-0 flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold text-red-700 bg-red-100 border border-teal-600 rounded-md hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                </svg>
-                <span>Cari Ulang</span>
-            </button>
+   </section>
+   <article id="detail-container" data-template-id="detail-panel" class="canva-card hidden app-card w-full max-w-4xl p-5 sm:p-8" aria-labelledby="student-name" style="background: rgb(255, 255, 255);">
+    <header data-template-id="detail-banner" class="canva-banner rounded-xl overflow-hidden text-white" style="background: linear-gradient(-45deg, rgb(17, 94, 89), rgb(20, 184, 166));">
+     <div class="h-14"></div>
+     <div class="px-4 pb-4 flex flex-wrap gap-4 items-end">
+      <div class="w-24 h-24 -mt-10 shrink-0 rounded-full border-4 border-white shadow bg-teal-50 overflow-hidden relative flex items-center justify-center"><span id="detail-initials" class="font-bold text-teal-700 text-2xl"></span>
+       <div id="detail-student-photo" class="photo-surface absolute inset-0 hidden" role="img" aria-label="Foto siswa"></div>
+      </div>
+      <div class="min-w-0 flex-1">
+       <h2 id="student-name" class="font-bold uppercase text-lg break-words"></h2>
+       <p class="text-sm">NISN · <span id="student-nisn"></span></p>
+      </div><button id="back-button" type="button" data-template-id="detail-exit" class="canva-button focusable px-3 py-2 rounded-full text-sm font-semibold hover:brightness-95" style="background: rgb(254, 226, 226); color: rgb(185, 28, 28); font-weight: 600; font-style: normal; font-size: 16px;">Keluar</button>
+     </div>
+    </header>
+    <aside data-template-id="clock-panel" class="canva-panel mt-4 rounded-xl p-4 flex justify-between items-center gap-4 text-white" style="background: linear-gradient(-45deg, rgb(17, 94, 89), rgb(20, 184, 166));">
+     <div>
+      <p data-template-id="today-label" class="canva-text text-sm" style="color: rgb(255, 255, 255); font-weight: 400; font-style: normal; font-size: 16px;">Hari ini,</p>
+      <p id="liveDayDate" class="font-bold"></p>
+     </div>
+     <p id="liveClock" class="text-3xl font-extrabold tabular-nums"></p>
+    </aside>
+    <section class="mt-6" aria-labelledby="identity-heading">
+     <h3 id="identity-heading" data-template-id="identity-heading-text" class="canva-text border-b pb-2 mb-4 font-semibold" style="color: rgb(15, 118, 110); font-weight: 600; font-style: normal; font-size: 19px;">Identitas Siswa</h3>
+     <div class="grid sm:grid-cols-2 gap-4">
+      <div class="student-field">
+       <p class="text-sm text-gray-500">Tempat, Tanggal Lahir</p>
+       <p id="student-birth" class="font-semibold"></p>
+      </div>
+      <div class="student-field">
+       <p class="text-sm text-gray-500">Jenis Kelamin</p>
+       <p id="student-gender" class="font-semibold"></p>
+      </div>
+      <div class="student-field">
+       <p class="text-sm text-gray-500">No. Induk</p>
+       <p id="student-no-induk" class="font-semibold"></p>
+      </div>
+      <div class="student-field">
+       <p class="text-sm text-gray-500">Tanggal Masuk</p>
+       <p id="student-entry-year" class="font-semibold"></p>
+      </div>
+      <div class="student-field">
+       <p class="text-sm text-gray-500">Status</p>
+       <p id="student-status" class="font-semibold"></p>
+      </div>
+     </div>
+    </section>
+    <section class="mt-6" aria-labelledby="family-heading">
+     <h3 id="family-heading" data-template-id="family-heading-text" class="canva-text border-b pb-2 mb-4 font-semibold" style="color: rgb(15, 118, 110); font-weight: 600; font-style: normal; font-size: 19px;">Identitas Orangtua &amp; Alamat</h3>
+     <div class="grid sm:grid-cols-2 gap-4">
+      <div class="student-field">
+       <p class="text-sm text-gray-500">Nama Ayah</p>
+       <p id="student-father" class="font-semibold"></p>
+      </div>
+      <div class="student-field">
+       <p class="text-sm text-gray-500">Nama Ibu</p>
+       <p id="student-mother" class="font-semibold"></p>
+      </div>
+      <div class="student-field sm:col-span-2">
+       <p class="text-sm text-gray-500">Alamat Lengkap</p>
+       <p id="student-address" class="font-semibold"></p>
+      </div>
+     </div>
+    </section><button id="open-preview" type="button" data-template-id="open-preview-button" class="canva-button focusable mt-7 w-full sm:w-auto px-5 py-3 rounded-md font-semibold hover:brightness-90" style="background: rgb(13, 148, 136); color: rgb(255, 255, 255); font-weight: 600; font-style: normal; font-size: 16px;">Cetak Kartu Pelajar</button>
+   </article>
+  </main>
+  <div id="preview-overlay" hidden="" class="fixed inset-0 z-50 overflow-y-auto bg-gray-950/75 p-4 sm:p-8" role="dialog" aria-modal="true" aria-labelledby="preview-heading">
+   <div id="preview-panel" data-template-id="preview-panel" class="canva-panel mx-auto max-w-3xl rounded-xl p-4 sm:p-7 shadow-2xl" style="background: rgb(255, 255, 255);">
+    <h2 id="preview-heading" data-template-id="preview-title" class="canva-text font-bold mb-5" style="color: rgb(31, 41, 55); font-weight: 700; font-style: normal; font-size: 24px;">Pratinjau Kartu Pelajar</h2>
+    <div id="print-cards" class="flex flex-wrap items-start justify-center gap-5">
+     <div class="preview-scale">
+      <section class="card-preview" aria-label="Sisi depan kartu pelajar">
+       <div class="card-band">
+        <div>
+         <div data-template-id="card-front-title" class="canva-text card-subtitle" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 16px;">KARTU PELAJAR</div>
+         <div data-template-id="card-front-school" class="canva-text card-school" style="color: rgb(255, 255, 255); font-weight: 800; font-style: normal; font-size: 16px;">MA MA'ARIF 1 JOMBANG</div>
+         <div class="card-subtitle">
+         </div>
         </div>
-
-        <div class="overflow-x-auto rounded-lg border border-teal-600">
-            <table class="w-full text-sm text-left text-gray-500">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-4 py-3 sm:px-6 text-center">No</th>
-                        <th scope="col" class="px-4 py-3 sm:px-6 text-center">Foto</th>
-                        <th scope="col" class="px-4 py-3 sm:px-6">Nama Siswa</th>
-                        <th scope="col" class="px-4 py-3 sm:px-6">NISN</th>
-                        <th scope="col" class="px-4 py-3 sm:px-6">Status</th>
-                        <th scope="col" class="px-4 py-3 sm:px-6 text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="student-table-body" class="divide-y divide-gray-200">
-                    <!-- Data akan diisi lewat JavaScript -->
-                </tbody>
-            </table>
+        <div class="card-brand">
+         <img data-template-id="card-front-logo" loading="lazy" class="canva-image" style="display:block;width:13mm;height:12mm;object-fit:contain" src="canva://MAHZKfEoYR4/1" alt="Logo MA Ma'arif 1 Jombang">
         </div>
+       </div>
+       <div class="card-inner">
+        <div id="card-photo" class="photo-surface card-photo">
+         <span id="card-initials"></span>
+        </div>
+        <div class="card-info">
+         <div id="card-name" class="card-name"></div>
+         <dl>
+          <div class="card-row">
+           <dt><span>NISN</span><span class="card-label-colon">:</span>
+           </dt>
+           <dd id="card-nisn"></dd>
+          </div>
+          <div class="card-row">
+           <dt><span>No. Induk</span><span class="card-label-colon">:</span>
+           </dt>
+           <dd id="card-induk"></dd>
+          </div>
+          <div class="card-row">
+           <dt><span>Jenis Kelamin</span><span class="card-label-colon">:</span>
+           </dt>
+           <dd id="card-gender"></dd>
+          </div>
+          <div class="card-row">
+           <dt><span>TTL</span><span class="card-label-colon">:</span>
+           </dt>
+           <dd id="card-birth"></dd>
+          </div>
+         </dl>
+        </div>
+       </div>
+       <div class="card-footer">
+        <span id="card-footer-barcode-wrap">
+         <canvas id="nisn-code" class="card-barcode" width="360" height="84" aria-label="Barcode identitas siswa"></canvas></span><span class="card-signature-wrap"><span class="card-signature"></span><span class="card-signature-label"></span><span id="card-print-date"></span></span>
+       </div>
+      </section>
+     </div>
+     <div class="preview-scale">
+      <section class="card-preview" aria-label="Sisi belakang kartu pelajar">
+       <div class="card-band">
+        <div>
+         <div data-template-id="card-back-title" class="canva-text card-subtitle" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 16px;">INFORMASI PESERTA DIDIK</div>
+         <div data-template-id="card-back-school" class="canva-text card-school" style="color: rgb(255, 255, 255); font-weight: 800; font-style: normal; font-size: 16px;">MA MAARIF 1 JOMBANG</div>
+        </div>
+        <div class="card-brand">
+         <span style="color:#dc2626">e-</span><span style="color:#0f766e">Ardis</span>
+        </div>
+       </div>
+       <div class="back-inner">
+        <h3 data-template-id="card-rules-title" class="canva-text back-title" style="color: rgb(15, 118, 110); font-weight: 800; font-style: normal; font-size: 10px;">Tata Tertib dan Ketentuan Pemilik Kartu</h3>
+        <ul class="back-rules">
+         <li data-template-id="card-rule-1" class="canva-text" style="color: rgb(23, 59, 57); font-weight: 400; font-style: normal; font-size: 8px;">Kartu ini adalah bukti sah bahwa pemegang kartu merupakan siswa aktif di sekolah.</li>
+         <li data-template-id="card-rule-2" class="canva-text" style="color: rgb(23, 59, 57); font-weight: 400; font-style: normal; font-size: 8px;">Kartu tidak boleh disalahgunakan atau dipindahtangankan kepada orang lain.</li>
+         <li data-template-id="card-rule-3" class="canva-text" style="color: rgb(23, 59, 57); font-weight: 400; font-style: normal; font-size: 8px;">Jika kartu hilang atau rusak, pemegang kartu wajib segera melapor ke bagian administrasi sekolah.</li>
+         <li data-template-id="card-rule-4" class="canva-text" style="color: rgb(23, 59, 57); font-weight: 400; font-style: normal; font-size: 8px;">Apabila menemukan kartu ini, harap mengembalikannya ke alamat sekolah yang tertera.</li>
+        </ul>
+       </div>
+       <div class="card-footer">
+        <span>Identitas peserta didik</span><span id="card-back-nisn"></span>
+       </div>
+      </section>
+     </div>
     </div>
-
-    <!-- Kontainer Detail Arsip Siswa -->
-    <div id="detail-container" class="hidden w-full max-w-4xl p-6 md:p-8 card">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b pb-4 gap-4">
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-                <div class="flex-shrink-0 text-teal-600 bg-teal-50 p-2 rounded-full border border-teal-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 md:w-8 md:h-8">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
-					</svg>
-                </div>
-                <div>
-                    <h1 class="text-lg md:text-2xl font-bold text-gray-800">Arsip Digital Data Siswa</h1>
-                    <p class="text-xs md:text-sm text-gray-500">MTs Ma'arif 1 Jombang</p>
-                </div>
-            </div>
-            <button id="back-button" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold text-red-700 bg-red-100 border border-teal-600 rounded-md hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
-                </svg>
-                <span>Kembali</span>
-            </button>
-        </div>
-		
-		<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div class="flex items-center gap-4">
-                 
-                <!-- WRAPPER FOTO DENGAN FALLBACK STACKING -->
-                <div class="relative w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 rounded-full overflow-hidden border border-teal-600 shadow-sm bg-teal-50 flex items-center justify-center">
-                     
-                    <!-- Lapisan 1: Inisial (Tampil jika foto gagal) -->
-                    <span id="detail-initials" class="text-teal-600 text-xl sm:text-2xl font-bold uppercase select-none"></span>
-                     
-                    <!-- Lapisan 2: Foto (Menutupi inisial jika berhasil dimuat) -->
-                    <img id="detail-student-photo" src="" alt="Foto Siswa" class="absolute inset-0 w-full h-full object-cover object-top bg-teal-50">
-                     
-                </div>
-                 
-                <div>
-				    <p class="text-xs sm:text-sm text-gray-500">Nama Siswa</p>
-                    <p id="student-name" class="font-semibold text-sm sm:text-base"></p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Identitas Pribadi Siswa -->
-		<h3 class="font-semibold text-sm sm:text-base mt-4 mb-2">Identitas Siswa</h3>
-        <div class="bg-gray-50 p-6 sm:p-6 rounded-lg border border-teal-600">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 text-gray-700">
-                <div class="flex items-center gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M-7.5 12h22.5" /></svg>
-                    </div>
-                    <div>
-                        <p class="text-xs sm:text-sm text-gray-500">Tempat, Tanggal Lahir</p>
-                        <p id="student-birth" class="font-semibold text-sm sm:text-base"></p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
-                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.952a4.5 4.5 0 01-9 0m9 0a4.5 4.5 0 00-9 0m9 0h.008m-9 0h.008m-9 0h.008m9 0h.008M9 11.25v1.5m3-1.5v1.5m3-1.5v1.5M12 21a9 9 0 110-18 9 9 0 010 18z" /></svg>
-                    </div>
-                    <div>
-                        <p class="text-xs sm:text-sm text-gray-500">Jenis Kelamin</p>
-                        <p id="student-gender" class="font-semibold text-sm sm:text-base"></p>
-                    </div>
-                </div>
-                 <div class="flex items-center gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
-                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg>
-                    </div>
-                    <div>
-                        <p class="text-xs sm:text-sm text-gray-500">No. Induk</p>
-                        <p id="student-no-induk" class="font-semibold text-sm sm:text-base"></p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
-                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 8.25h13.5M5.25 15.75h13.5M8.25 5.25v13.5" /></svg>
-                    </div>
-                    <div>
-                        <p class="text-xs sm:text-sm text-gray-500">No. NISN</p>
-                        <p id="student-nisn" class="font-semibold text-sm sm:text-base"></p>
-                    </div>
-                </div>
-                 <div class="flex items-center gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
-                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
-                    </div>
-                    <div>
-                        <p class="text-xs sm:text-sm text-gray-500">Tahun Masuk</p>
-                        <p id="student-entry-year" class="font-semibold text-sm sm:text-base"></p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
-                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    </div>
-                    <div>
-                        <p class="text-xs sm:text-sm text-gray-500">Status</p>
-                        <p id="student-status" class="font-semibold text-sm sm:text-base"></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Identitas Orangtua & Alamat -->
-        <h3 class="font-semibold text-sm sm:text-base mt-4 mb-2">Identitas Orangtua & Alamat</h3>
-        <div class="bg-gray-50 p-6 sm:p-6 rounded-lg border border-teal-600">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 text-gray-700">
-                <div class="flex items-center gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
-                    </div>
-                    <div>
-                        <p class="text-xs sm:text-sm text-gray-500">Nama Ayah</p>
-                        <p id="student-father" class="font-semibold text-sm sm:text-base"></p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
-                    </div>
-                    <div>
-                        <p class="text-xs sm:text-sm text-gray-500">Nama Ibu</p>
-                        <p id="student-mother" class="font-semibold text-sm sm:text-base"></p>
-                    </div>
-                </div>
-                
-                <div class="flex items-center gap-4 md:col-span-2">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
-                    </div>
-                    <div class="w-full">
-                        <p class="text-xs sm:text-sm text-gray-500">Alamat Lengkap</p>
-                        <p id="student-address" class="font-semibold text-sm sm:text-base break-words"></p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="preview-controls" class="flex flex-wrap justify-end gap-3 mt-6"><button id="close-preview" type="button" data-template-id="close-preview-button" class="canva-button focusable px-4 py-2 rounded-md font-semibold" style="background: rgb(229, 231, 235); color: rgb(31, 41, 55); font-weight: 600; font-style: normal; font-size: 16px;">Tutup Pratinjau</button> <button id="print-card" type="button" data-template-id="print-card-button" class="canva-button focusable px-4 py-2 rounded-md font-semibold hover:brightness-90" style="background: rgb(13, 148, 136); color: rgb(255, 255, 255); font-weight: 600; font-style: normal; font-size: 16px;">Cetak Kartu</button>
     </div>
-
-<script>
-    // =========================================================================
-    // 1. PENGATURAN DATA SPREADSHEET
-    // =========================================================================
-    const dataSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS51SPigUdsaQalGMPtTJ6O2KR0pEkWYvHvrnPKsDM4CN7ggbCioUtnGK5l6v-v_wXflCAqKaiKGGq9/pub?gid=0&single=true&output=csv';
-
-    // =========================================================================
-    // 2. PENGATURAN LINK HOSTING FOTO (SANGAT PENTING!)
-    // =========================================================================
-    const URL_FOLDER_FOTO = 'https://maarif1jombang.my.id/mts/foto/'; 
-    const FORMAT_FOTO = '.jpg'; 
-
-    // Konfigurasi Kolom
+   </div>
+  </div>
+  <script>
+    const dataSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-gNI4gKQReSE7ioS2gOYF81g0a9yJwhS78dHizNKkp1BbE75ryEWeSromFbB5OmhDJhUC8pzilive/pub?gid=637032895&single=true&output=csv';
+    const photoFolder = 'https://maarif1jombang.github.io/file/foto_siswa/';
     const columns = {
-        nama: 'Nama Siswa',
-        tempatLahir: 'Tempat Lahir',
-        tanggalLahir: 'Tanggal Lahir',
-        jenisKelamin: 'Jenis Kelamin',
-        noInduk: 'No Induk',
-        nisn: 'NISN',
-        tahunMasuk: 'Tahun Masuk',
-        status: 'Status',
-        kelas: 'Kelas',
-        namaAyah: 'Nama Ayah',
-        namaIbu: 'Nama Ibu',
-        alamat: 'Alamat'
+      nama:'Nama Siswa', tempatLahir:'Tempat Lahir', tanggalLahir:'Tanggal Lahir',
+      jenisKelamin:'Jenis Kelamin', noInduk:'No Induk', nisn:'NISN',
+      tahunMasuk:'Tahun Masuk', status:'Status', kelas:'Kelas',
+      namaAyah:'Nama Ayah', namaIbu:'Nama Ibu', alamat:'Alamat'
     };
-    // =========================================================================
-
-    const loginContainer = document.getElementById('login-container');
-    const detailContainer = document.getElementById('detail-container');
-    const listContainer = document.getElementById('list-container');
-    
-    const loginButton = document.getElementById('login-button');
-    const backButton = document.getElementById('back-button');
-    const backToSearchButton = document.getElementById('back-to-search-button');
-    
-    const searchInputElem = document.getElementById('searchInput');
-    const errorMessage = document.getElementById('error-message');
-    const studentTableBody = document.getElementById('student-table-body');
-    const searchResultCount = document.getElementById('search-result-count');
-
+    const $ = id => document.getElementById(id);
     let studentListCache = null;
     let currentSearchResults = [];
+    let selectedStudent = null;
+    let photoAvailable = false;
+    let photoRequest = 0;
+    let returnFocus = null;
 
-    // FUNGSI PARSER CSV BARU: Menangani kutip dua dan koma di dalam kalimat
-    function parseCSV(str) {
-        const arr = [];
-        let quote = false;  // Penanda jika sedang berada di dalam teks yang diapit "..."
-        let row = 0, col = 0;
-
-        for (let c = 0; c < str.length; c++) {
-            let cc = str[c], nc = str[c+1];
-            arr[row] = arr[row] || [];
-            arr[row][col] = arr[row][col] || '';
-
-            // Jika ketemu dua buah kutip dua ("") di dalam kutip, anggap sebagai satu karakter kutip
-            if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
-            // Toggle mode kutip
-            if (cc == '"') { quote = !quote; continue; }
-            // Koma di luar mode kutip berarti pindah kolom
-            if (cc == ',' && !quote) { ++col; continue; }
-            // Enter (CRLF atau LF) di luar mode kutip berarti pindah baris
-            if (cc == '\r' && nc == '\n' && !quote) { ++row; col = 0; ++c; continue; }
-            if (cc == '\n' && !quote) { ++row; col = 0; continue; }
-            if (cc == '\r' && !quote) { ++row; col = 0; continue; }
-
-            // Selain kondisi di atas, tambahkan karakternya ke sel yang sedang aktif
-            arr[row][col] += cc;
-        }
-        
-        if (arr.length < 2) return [];
-        const headers = arr[0].map(h => h.trim());
-        const data = [];
-        
-        for (let i = 1; i < arr.length; i++) {
-            const values = arr[i];
-            // Abaikan baris kosong
-            if (values.length === 1 && values[0].trim() === '') continue;
-            
-            const obj = {};
-            headers.forEach((header, index) => {
-                obj[header] = values[index] ? values[index].trim() : '';
-            });
-            data.push(obj);
-        }
-        return data;
+    function parseCSV(input) {
+      const rows = []; let row = [], cell = '', quoted = false;
+      for (let i = 0; i < input.length; i++) {
+        const ch = input[i];
+        if (quoted) {
+          if (ch === '"' && input[i+1] === '"') { cell += '"'; i++; }
+          else if (ch === '"') quoted = false;
+          else cell += ch;
+        } else if (ch === '"') quoted = true;
+        else if (ch === ',') { row.push(cell); cell = ''; }
+        else if (ch === '\n' || ch === '\r') {
+          if (ch === '\r' && input[i+1] === '\n') i++;
+          row.push(cell); rows.push(row); row = []; cell = '';
+        } else cell += ch;
+      }
+      if (cell || row.length) { row.push(cell); rows.push(row); }
+      if (rows.length < 2) return [];
+      const headers = rows.shift().map(h => h.trim().replace(/^\uFEFF/, ''));
+      return rows.filter(r => r.some(v => v.trim())).map(r => {
+        const record = {};
+        headers.forEach((h, i) => record[h] = (r[i] || '').trim());
+        return record;
+      });
     }
 
-    async function fetchAndProcessData() {
-        if (studentListCache) return studentListCache;
-
-        try {
-            const cacheBuster = `&_=${new Date().getTime()}`;
-            const response = await fetch(dataSheetUrl + cacheBuster);
-            if (!response.ok) { throw new Error(`Gagal menghubungi server.`); }
-            
-            const csvText = await response.text();
-            // Menggunakan parser CSV yang baru
-            const rawData = parseCSV(csvText);
-            
-            studentListCache = rawData.map(row => ({
-                nama: row[columns.nama] || '-',
-                tempatLahir: row[columns.tempatLahir] || '-',
-                tanggalLahir: row[columns.tanggalLahir] || '-',
-                jenisKelamin: row[columns.jenisKelamin] || '-',
-                noInduk: row[columns.noInduk] || '-',
-                nisn: row[columns.nisn] || '-',
-                tahunMasuk: row[columns.tahunMasuk] || '-',
-                status: row[columns.status] || '-',
-                kelas: row[columns.kelas] || '-',
-                namaAyah: row[columns.namaAyah] || '-',
-                namaIbu: row[columns.namaIbu] || '-',
-                alamat: row[columns.alamat] || '-'
-            }));
-
-            return studentListCache;
-        } catch (error) {
-            errorMessage.textContent = 'Gagal mengambil data. Periksa koneksi internet.';
-            errorMessage.classList.remove('hidden');
-            return null;
-        }
-    }
-    
-    function getInitials(name) {
-        if (!name) return '??';
-        const parts = name.trim().split(/\s+/);
-        if (parts.length === 0) return '??';
-        if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
-        return (parts[0][0] + parts[1][0]).toUpperCase();
+    async function fetchStudents() {
+      if (studentListCache) return studentListCache;
+      const response = await fetch(dataSheetUrl + '&_=' + Date.now());
+      if (!response.ok) throw new Error('Gagal mengambil data siswa.');
+      const rows = parseCSV(await response.text());
+      studentListCache = rows.map(row => Object.fromEntries(
+        Object.entries(columns).map(([key, heading]) => [key, row[heading] || '-'])
+      ));
+      return studentListCache;
     }
 
+    function showError(message) {
+      $('error-message').textContent = message;
+      $('error-message').classList.remove('hidden');
+    }
+    function showView(view) {
+      ['login-container','list-container','detail-container'].forEach(id => $(id).classList.toggle('hidden', id !== view));
+    }
+    function initials(name) {
+      const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+      return (parts.length > 1 ? parts[0][0] + parts[1][0] : (parts[0] || '??').slice(0,2)).toUpperCase();
+    }
+    function put(id, value) { $(id).textContent = value || '-'; }
+    function setPhoto(student) {
+      const token = ++photoRequest;
+      photoAvailable = false;
+      const detail = $('detail-student-photo');
+      detail.classList.add('hidden');
+      detail.style.backgroundImage = '';
+      $('card-photo').style.backgroundImage = '';
+      $('card-initials').textContent = initials(student.nama);
+      $('detail-initials').textContent = initials(student.nama);
+      // Restrict the path segment to digits so CSV content cannot change the destination.
+      if (!/^\d{1,20}$/.test(student.nisn)) return;
+      const url = photoFolder + student.nisn + '.jpg';
+      const probe = new Image();
+      probe.onload = () => {
+        if (token !== photoRequest) return;
+        photoAvailable = true;
+        detail.style.backgroundImage = `url("${url}")`;
+        detail.classList.remove('hidden');
+        if (!$('preview-overlay').hidden) syncCardPhoto(url);
+      };
+      probe.onerror = () => { if (token === photoRequest) photoAvailable = false; };
+      probe.src = url;
+    }
+    function syncCardPhoto(url) {
+      $('card-photo').style.backgroundImage = url ? `url("${url}")` : '';
+      $('card-initials').hidden = Boolean(url);
+    }
     function showStudentDetails(student) {
-        if (!student) return;
-        
-        document.getElementById('student-name').textContent = student.nama;
-        document.getElementById('student-birth').textContent = `${student.tempatLahir}, ${student.tanggalLahir}`;
-        document.getElementById('student-gender').textContent = student.jenisKelamin;
-        document.getElementById('student-no-induk').textContent = student.noInduk;
-        document.getElementById('student-nisn').textContent = student.nisn;
-        document.getElementById('student-entry-year').textContent = student.tahunMasuk;
-        document.getElementById('student-status').textContent = `${student.status} ${student.kelas}`;
-        
-        document.getElementById('student-father').textContent = student.namaAyah;
-        document.getElementById('student-mother').textContent = student.namaIbu;
-        document.getElementById('student-address').textContent = student.alamat;
-
-        const photoEl = document.getElementById('detail-student-photo');
-        const initialsEl = document.getElementById('detail-initials');
-        const expectedPhotoUrl = `${URL_FOLDER_FOTO}${student.nisn}${FORMAT_FOTO}`;
-        
-        initialsEl.textContent = getInitials(student.nama);
-        photoEl.style.display = 'block';
-        photoEl.src = expectedPhotoUrl;
-        
-        photoEl.onerror = function() {
-            this.style.display = 'none';
-        };
-
-        loginContainer.classList.add('hidden');
-        listContainer.classList.add('hidden');
-        detailContainer.classList.remove('hidden');
+      selectedStudent = student;
+      put('student-name', student.nama);
+      put('student-nisn', student.nisn);
+      put('student-birth', student.tempatLahir + ', ' + student.tanggalLahir);
+      put('student-gender', student.jenisKelamin);
+      put('student-no-induk', student.noInduk);
+      put('student-entry-year', student.tahunMasuk);
+      put('student-status', [student.status, student.kelas].filter(x => x && x !== '-').join(' ') || '-');
+      put('student-father', student.namaAyah);
+      put('student-mother', student.namaIbu);
+      put('student-address', student.alamat);
+      setPhoto(student);
+      showView('detail-container');
     }
-
     function showStudentList(students) {
-        studentTableBody.innerHTML = '';
-        searchResultCount.textContent = `Ditemukan ${students.length} data siswa`;
-
-        students.forEach((student, index) => {
-            const tr = document.createElement('tr');
-            tr.className = 'bg-white hover:bg-teal-50 transition duration-150 border-b';
-            
-            const expectedPhotoUrl = `${URL_FOLDER_FOTO}${student.nisn}${FORMAT_FOTO}`;
-            const initials = getInitials(student.nama);
-            
-            tr.innerHTML = `
-                <td class="whitespace-nowrap px-4 py-3 sm:px-6 text-gray-900 text-center font-medium">${index + 1}</td>
-                <td class="whitespace-nowrap px-4 py-3 sm:px-6 text-center">
-                    <div class="relative w-10 h-10 flex-shrink-0 rounded-full overflow-hidden bg-teal-50 border border-teal-600 flex items-center justify-center">
-                        <span class="text-teal-600 text-xs font-bold select-none">${initials}</span>
-                        <img src="${expectedPhotoUrl}" 
-                             alt="${student.nama}" 
-                             class="absolute inset-0 w-full h-full object-cover object-top bg-teal-50" 
-                             onerror="this.style.display='none';">
-                    </div>
-                </td>
-                <td class="whitespace-nowrap px-4 py-3 sm:px-6 text-gray-900 text-left font-medium">${student.nama}</td>
-                <td class="whitespace-nowrap px-4 py-3 sm:px-6 text-gray-500 text-left">${student.nisn}</td>
-                <td class="whitespace-nowrap px-4 py-3 sm:px-6 text-gray-500 text-left">${student.kelas}</td>
-                <td class="whitespace-nowrap px-4 py-3 sm:px-6 text-gray-500 text-center">
-                    <button class="px-3 py-1.5 text-xs font-medium text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300 btn-detail" data-nisn="${student.nisn}">Lihat</button>
-                </td>
-            `;
-            studentTableBody.appendChild(tr);
+      $('search-query-value').textContent = $('searchInput').value.trim();
+      const body = $('student-table-body');
+      body.replaceChildren();
+      students.forEach((student, index) => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-gray-50';
+        [String(index + 1), student.nama, student.nisn, student.kelas].forEach(value => {
+          const td = document.createElement('td');
+          td.className = 'p-3 whitespace-nowrap';
+          td.textContent = value;
+          tr.appendChild(td);
         });
-
-        document.querySelectorAll('.btn-detail').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const nisn = e.target.getAttribute('data-nisn');
-                const student = students.find(s => s.nisn === nisn);
-                if (student) showStudentDetails(student);
-            });
-        });
-
-        loginContainer.classList.add('hidden');
-        detailContainer.classList.add('hidden');
-        listContainer.classList.remove('hidden');
+        const cell = document.createElement('td');
+        cell.className = 'p-3';
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'focusable px-3 py-1.5 rounded bg-teal-600 text-white hover:bg-teal-700';
+        button.textContent = 'Lihat';
+        button.addEventListener('click', () => showStudentDetails(student));
+        cell.appendChild(button);
+        tr.appendChild(cell);
+        body.appendChild(tr);
+      });
+      showView('list-container');
     }
-    
-    function setLoading(isLoading) {
-        if (isLoading) {
-            loginButton.disabled = true;
-            document.getElementById('login-button-text').textContent = 'Mencari...';
-            document.getElementById('loader').classList.remove('hidden');
-            errorMessage.classList.add('hidden');
-        } else {
-            loginButton.disabled = false;
-            document.getElementById('login-button-text').textContent = 'Cari Data Siswa';
-            document.getElementById('loader').classList.add('hidden');
-        }
-    }
-
-    async function handleLogin() {
-        const searchInput = searchInputElem.value.trim();
-        if (!searchInput) {
-            errorMessage.textContent = 'Input tidak boleh kosong.';
-            errorMessage.classList.remove('hidden');
-            return;
-        }
-
-        setLoading(true);
-        const allStudents = await fetchAndProcessData();
-        setLoading(false);
-
-        if (!allStudents) return;
-        
-        const searchLower = searchInput.toLowerCase();
-        
-        const matches = allStudents.filter(s => {
-            const matchNisn = s.nisn === searchInput;
-            const matchName = s.nama && s.nama.toLowerCase().includes(searchLower);
-            const matchClass = s.kelas && s.kelas.toLowerCase().includes(searchLower);
-            
-            return matchNisn || matchName || matchClass;
-        });
-        
+    async function handleSearch(event) {
+      event.preventDefault();
+      const query = $('searchInput').value.trim();
+      $('error-message').classList.add('hidden');
+      if (!query) return showError('Input tidak boleh kosong.');
+      $('login-button').disabled = true;
+      $('loading-text').classList.remove('hidden');
+      try {
+        const all = await fetchStudents();
+        const term = query.toLocaleLowerCase('id-ID');
+        const matches = all.filter(s => s.nisn === query || s.nama.toLocaleLowerCase('id-ID').includes(term) || s.kelas.toLocaleLowerCase('id-ID').includes(term));
         currentSearchResults = matches;
-
-        if (matches.length === 0) {
-            errorMessage.textContent = 'Data tidak ditemukan. Periksa NISN, Nama, atau Kelas.';
-            errorMessage.classList.remove('hidden');
-        } else if (matches.length === 1) {
-            showStudentDetails(matches[0]);
-        } else {
-            showStudentList(matches);
-        }
+        if (!matches.length) showError('Data tidak ditemukan. Coba lagi.');
+        else if (matches.length === 1) showStudentDetails(matches[0]);
+        else showStudentList(matches);
+      } catch {
+        showError('Gagal mengambil data server. Periksa koneksi lalu coba lagi.');
+      } finally {
+        $('login-button').disabled = false;
+        $('loading-text').classList.add('hidden');
+      }
     }
-
-    function handleBack() {
-        if (currentSearchResults && currentSearchResults.length > 1) {
-             showStudentList(currentSearchResults);
-        } else {
-             resetToSearch();
-        }
-    }
-
     function resetToSearch() {
-        searchInputElem.value = '';
-        detailContainer.classList.add('hidden');
-        listContainer.classList.add('hidden');
-        loginContainer.classList.remove('hidden');
-        errorMessage.classList.add('hidden');
-        currentSearchResults = [];
+      ++photoRequest;
+      selectedStudent = null;
+      currentSearchResults = [];
+      $('searchInput').value = '';
+      $('error-message').classList.add('hidden');
+      showView('login-container');
+      $('searchInput').focus();
     }
-
-    loginButton.addEventListener('click', handleLogin);
-    backButton.addEventListener('click', handleBack);
-    backToSearchButton.addEventListener('click', resetToSearch);
-    
-    searchInputElem.addEventListener('keyup', (event) => {
-        if (event.key === 'Enter') handleLogin();
+    function updateClock() {
+      const now = new Date();
+      put('liveDayDate', now.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' }));
+      put('liveClock', now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit', hour12:false }).replace(':', '.'));
+    }
+    function drawNisnCode(payload) {
+      JsBarcode('#nisn-code', String(payload || '-'), {
+        format: 'CODE128', displayValue: false, width: 1.2, height: 55,
+        margin: 2, background: '#ffffff', lineColor: '#0f766e'
+      });
+    }
+    function openPreview() {
+      if (!selectedStudent) return;
+      const s = selectedStudent;
+      put('card-name', s.nama);
+      put('card-nisn', s.nisn);
+      put('card-induk', s.noInduk);
+      put('card-gender', s.jenisKelamin);
+      put('card-birth', [s.tempatLahir, s.tanggalLahir].filter(value => value && value !== '-').join(', ') || '-');
+      put('card-print-date', 'Dicetak ' + new Date().toLocaleDateString('id-ID'));
+      $('card-initials').textContent = initials(s.nama);
+      syncCardPhoto(photoAvailable && /^\d{1,20}$/.test(s.nisn) ? photoFolder + s.nisn + '.jpg' : null);
+      const qrPayload = [
+        ['Nama', s.nama], ['NISN', s.nisn], ['No. Induk', s.noInduk],
+        ['Jenis Kelamin', s.jenisKelamin], ['TTL', [s.tempatLahir, s.tanggalLahir].filter(value => value && value !== '-').join(', ')]
+      ].map(([label, value]) => `${label}: ${String(value || '-').replace(/[\\r\\n]+/g, ' ')}`).join('\\n');
+      drawNisnCode(qrPayload);
+      returnFocus = document.activeElement;
+      $('preview-overlay').hidden = false;
+      document.body.style.overflow = 'hidden';
+      $('close-preview').focus();
+    }
+    function closePreview() {
+      $('preview-overlay').hidden = true;
+      document.body.style.overflow = '';
+      if (returnFocus && returnFocus.isConnected) returnFocus.focus();
+    }
+    $('search-form').addEventListener('submit', handleSearch);
+    $('back-to-search-button').addEventListener('click', resetToSearch);
+    $('back-button').addEventListener('click', () => currentSearchResults.length > 1 ? showStudentList(currentSearchResults) : resetToSearch());
+    $('open-preview').addEventListener('click', openPreview);
+    $('close-preview').addEventListener('click', closePreview);
+    function printCard() {
+      if ($('preview-overlay').hidden || !selectedStudent) return;
+      const printButton = $('print-card');
+      printButton.disabled = true;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          // Membuka dialog cetak sistem agar pengguna dapat memilih printer atau Simpan sebagai PDF.
+          window.print();
+          setTimeout(() => { printButton.disabled = false; }, 250);
+        });
+      });
+    }
+    $('print-card').addEventListener('click', printCard);
+    $('preview-overlay').addEventListener('click', event => {
+      if (event.target === $('preview-overlay')) closePreview();
     });
-    
-    document.addEventListener('DOMContentLoaded', () => {
-       fetchAndProcessData();
+    document.addEventListener('keydown', event => {
+      if ($('preview-overlay').hidden) return;
+      if (event.key === 'Escape') closePreview();
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'p') {
+        event.preventDefault();
+        window.print();
+      }
+      if (event.key === 'Tab') {
+        const controls = [$('close-preview'), $('print-card')];
+        if (event.shiftKey && document.activeElement === controls[0]) { event.preventDefault(); controls[1].focus(); }
+        else if (!event.shiftKey && document.activeElement === controls[1]) { event.preventDefault(); controls[0].focus(); }
+      }
     });
-
-</script>
-</body>
-</html>
+    $('year').textContent = new Date().getFullYear();
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+ 
+</body></html>
